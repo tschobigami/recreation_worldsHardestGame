@@ -1,42 +1,42 @@
 from shapely import geometry
 
 class area():
-    def __init__(self, level):
+    def __init__(self, level, o_speed):
         self.level=level
         if level==1:
-            self.frame=[(100,210),(100,390),(700,390),(700,210)]
+            self.frame=[(130,210),(130,390),(670,390),(670,210)]
             self.gridfactor=30
             self.sizeX=20
             self.sizeY=6
             
-            self.playingField=[(100,210),
+            self.playingField=[(130,210),
                                (220,210),
                                (220,360),
                                (250,360),
                                (250,240),
                                (520,240),
                                (520,210),
-                               (700,210),
-                               (700,390),
+                               (670,210),
+                               (670,390),
                                (580,390),
                                (580,240),
                                (550,240),
                                (550,360),
                                (280,360),
                                (280,390),
-                               (100,390)]
+                               (130,390)]
             
-            self.startArea=[(100,210),
+            self.startArea=[(130,210),
                             (220,210),
                             (220,390),
-                            (100,390)]
+                            (130,390)]
             
             self.finishArea=[(580,210),
-                             (700,210),
-                             (700,390),
+                             (670,210),
+                             (670,390),
                              (580,390)]
             
-            self.startingPos=(160,300)
+            self.startingPos=(175,300)
             
             self.area_obj=geometry.polygon.Polygon(self.playingField)
             
@@ -56,13 +56,13 @@ class area():
                         else:
                             self.darkList.append(rect)
                             
-            self.obstacles=self.generateObstacles()
+            self.obstacles=self.generateObstacles(o_speed)
     
-    def generateObstacles(self):
-        return [obstacle(7,(265,255),(535,255),5),
-                obstacle(7,(535,285),(265,285),5),
-                obstacle(7,(265,315),(535,315),5),
-                obstacle(7,(535,345),(265,345),5)]
+    def generateObstacles(self, o_speed):
+        return [obstacle(7,(265,255),(535,255),o_speed),
+                obstacle(7,(535,285),(265,285),o_speed),
+                obstacle(7,(265,315),(535,315),o_speed),
+                obstacle(7,(535,345),(265,345),o_speed)]
         
     def update(self):
         for o in self.obstacles:

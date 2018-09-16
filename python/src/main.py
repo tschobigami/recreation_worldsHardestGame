@@ -17,16 +17,16 @@ def play():
                     pause()
         keys=pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            player.pos=(player.pos[0],player.pos[1]-2)
+            player.pos=(player.pos[0],player.pos[1]-p_speed)
             player.update()
         if keys[pygame.K_DOWN]:
-            player.pos=(player.pos[0],player.pos[1]+2)
+            player.pos=(player.pos[0],player.pos[1]+p_speed)
             player.update()
         if keys[pygame.K_LEFT]:
-            player.pos=(player.pos[0]-2,player.pos[1])
+            player.pos=(player.pos[0]-p_speed,player.pos[1])
             player.update()
         if keys[pygame.K_RIGHT]:
-            player.pos=(player.pos[0]+2,player.pos[1])
+            player.pos=(player.pos[0]+p_speed,player.pos[1])
             player.update()
         
         area.update()
@@ -57,7 +57,7 @@ def play():
         screen.blit(text,(780 - text.get_width(), 20))
         
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(fps)
         
 def pause():
     pygame.mixer.music.pause()
@@ -94,6 +94,12 @@ RED=(222,0,0)
 BLUE=(100,100,200)
 WHITE=(255,255,255)
 MBOK=1
+HIGHFPS=60
+NORMALFPS=30
+LOWFPS=20
+fps=NORMALFPS
+p_speed=60/fps
+o_speed=180/fps
 deaths=0
 levels=[1]
 
@@ -101,7 +107,7 @@ pygame.mixer.music.load(os.path.dirname(os.path.abspath(__file__))+"\..\music\se
 pygame.mixer.music.play(-1)
 
 for i in levels:
-    area=gamelogic.area(i)
+    area=gamelogic.area(i, o_speed)
     player=gamelogic.player((area))
     play()
     
