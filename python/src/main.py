@@ -2,7 +2,6 @@ import pygame
 import gamelogic
 import ctypes
 import os
-from numpy.lib._iotools import easy_dtype
 
 def play():
     global deaths
