@@ -88,6 +88,63 @@ def giveUp():
         pygame.quit()
         quit()
         
+def intro():
+    intro=True
+    global menuChoiceCurrent
+    while intro==True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                giveUp()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    menuChoiceCurrent=(menuChoiceCurrent-1)%len(menuChoices)
+                elif event.key == pygame.K_DOWN:
+                    menuChoiceCurrent=(menuChoiceCurrent+1)%len(menuChoices)
+                elif event.key == pygame.K_RETURN:
+                    if(menuChoices[menuChoiceCurrent]=="quit"):
+                        giveUp()
+                    elif(menuChoices[menuChoiceCurrent]=="play"):
+                        intro=False
+                    elif(menuChoices[menuChoiceCurrent]=="settings"):
+                        font = pygame.font.SysFont("vinerhanditc", 48)
+                        fadeList=[]
+                        for i in range(len(menuChoices)):
+                            fadeList.append((font.render(menuChoices[i],True,RED),(75, 50+i*100)))
+                        fadeLeft(fadeList)
+                        settings()
+        
+        screen.fill((50,50,100))
+        font = pygame.font.SysFont("vinerhanditc", 48)
+        for i in range(len(menuChoices)):
+            text = font.render(menuChoices[i], True, RED) 
+            screen.blit(text,(75, 50+i*100))
+        text = font.render("-", True, RED)
+        screen.blit(text,(50, 50+menuChoiceCurrent*100))
+        
+        pygame.display.update()
+        clock.tick(fps)
+    
+def settings():
+    settings=True
+    while settings:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    settings=False
+        screen.fill((50,50,100))
+        pygame.display.update()
+        clock.tick(fps)
+        
+def fadeLeft(textList):
+    global f_speed
+    max_length = max([t[0].get_width()+t[1][0] for t in textList])
+    for i in range(round(max_length/f_speed)+1):
+        screen.fill((50,50,100))
+        for t in textList:
+            screen.blit(t[0],(t[1][0]-i*f_speed,t[1][1]))
+        pygame.display.update()
+    
+
 pygame.init()
 
 screen = pygame.display.set_mode((800, 600))
@@ -109,16 +166,20 @@ PAUSE=pygame.K_p
 MBOK=1
 HIGHFPS=60
 NORMALFPS=30
-LOWFPS=20
 EASY=60
 HARD=180
 fps=NORMALFPS
 p_speed=60/fps
 o_speed=HARD/fps
+f_speed=90/fps
 deaths=0
 levels=[1,2]
 levelCounter=-1
 levelCurrent=levels[levelCounter]
+menuChoices=["play","settings","level editor", "quit"]
+menuChoiceCurrent=0
+
+intro()
 
 pygame.mixer.music.load(os.path.dirname(os.path.abspath(__file__))+"\..\music\seeingTheFuture.mp3")
 pygame.mixer.music.play(-1)
