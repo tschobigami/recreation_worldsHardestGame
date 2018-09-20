@@ -36,7 +36,7 @@ def play():
         if player.check_finished():
             finished=True
               
-        screen.fill((50,50,100))
+        screen.fill(DARKBLUE)
         for lrect in area.lightList:
             pygame.draw.polygon(screen,LIGHTGREY,lrect,0)
         for drect in area.darkList:
@@ -93,7 +93,7 @@ def intro():
     intro=True
     global menuChoiceCurrent
     while intro:
-        screen.fill((50,50,100))
+        screen.fill(DARKBLUE)
         textListMenu.append((font.render("-", True, RED),(50, 50+menuChoiceCurrent*100)))
         for t in textListMenu:
             screen.blit(t[0],(t[1][0],t[1][1]))
@@ -123,7 +123,7 @@ def settings():
     settings=True
     global settingsChoiceCurrent
     while settings:
-        screen.fill((50,50,100))
+        screen.fill(DARKBLUE)
         textListSettings.append((font.render("-", True, RED),(50, 50+settingsChoiceCurrent*100)))
         for t in textListSettings:
             screen.blit(t[0],(t[1][0],t[1][1]))
@@ -148,9 +148,16 @@ def changeSetting(setting):
     changing=True
     textListSettings.append((font.render("-", True, RED),(50, 50+settingsChoiceCurrent*100)))
     while changing:
-        screen.fill((50,50,100))
+        screen.fill(DARKBLUE)
         for t in textListSettings:
-            screen.blit(t[0],(t[1][0],t[1][1]))
+            if t==textListSettings[settingsChoiceCurrent] or t==textListSettings[-1]:
+                screen.blit(t[0],(t[1][0],t[1][1]))
+            else:
+                helperSurface=pygame.Surface(t[0].get_size())
+                helperSurface.fill(DARKBLUE)
+                helperSurface.blit(t[0],(0,0))
+                helperSurface.set_alpha(100)
+                screen.blit(helperSurface,(t[1][0],t[1][1]))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 giveUp()
@@ -158,7 +165,7 @@ def changeSetting(setting):
                 if event.key == pygame.K_ESCAPE:
                     changing=False
             
-        pygame.draw.rect(screen, RED, ((75,50+settingsChoiceCurrent*100),(textListSettings[settingsChoiceCurrent][0].get_width(),textListSettings[settingsChoiceCurrent][0].get_height())), 2)
+        pygame.draw.line(screen,RED,(300,0),(300,600),2)
         pygame.display.update()
         clock.tick(fps)
     
@@ -168,7 +175,7 @@ def fadeLeft(textOutList,textInList):
     global f_speed
     max_length = max([t[0].get_width()+t[1][0] for t in textOutList]+[800-t[1][0] for t in textInList])
     for i in range(round(max_length/f_speed)+1):
-        screen.fill((50,50,100))
+        screen.fill(DARKBLUE)
         for t in textOutList:
             screen.blit(t[0],(t[1][0]-i*f_speed,t[1][1]))
         for t in textInList:
@@ -180,7 +187,7 @@ def fadeRight(textOutList,textInList):
     global f_speed
     max_length = max([t[0].get_width()+t[1][0] for t in textInList]+[800-t[1][0] for t in textOutList])
     for i in range(round(max_length/f_speed)+1):
-        screen.fill((50,50,100))
+        screen.fill(DARKBLUE)
         for t in textOutList:
             screen.blit(t[0],(t[1][0]+i*f_speed,t[1][1]))
         for t in textInList:
@@ -200,6 +207,7 @@ GREEN=(100,200,100)
 BLACK=(0,0,0)
 RED=(222,0,0)
 BLUE=(100,100,200)
+DARKBLUE=(50,50,100)
 WHITE=(255,255,255)
 GOLD=(218,165,32)
 UP=pygame.K_UP
