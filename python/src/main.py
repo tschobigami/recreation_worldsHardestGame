@@ -51,8 +51,8 @@ def play():
                 pygame.draw.circle(screen,GOLD,c.pos,c.rad,0)
                 pygame.draw.circle(screen,BLACK,c.pos,c.rad,1)
         for o in area.obstacles:
-            pygame.draw.circle(screen,BLUE,o.pos,o.rad,0)
-            pygame.draw.circle(screen,BLACK,o.pos,o.rad,1)
+            pygame.draw.circle(screen,BLUE,(int(o.pos[0]),int(o.pos[1])),o.rad,0)
+            pygame.draw.circle(screen,BLACK,(int(o.pos[0]),int(o.pos[1])),o.rad,1)
             
         font = pygame.font.SysFont("vinerhanditc", 24)
         text = font.render("Death Counter: %s" %deaths, True, RED) 

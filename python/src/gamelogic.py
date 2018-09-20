@@ -155,35 +155,35 @@ class area():
     
     def generateObstacles(self, o_speed, level):
         if level==1:
-            return [obstacle(7,(265,255),[(535,255)],o_speed),
-                    obstacle(7,(535,285),[(265,285)],o_speed),
-                    obstacle(7,(265,315),[(535,315)],o_speed),
-                    obstacle(7,(535,345),[(265,345)],o_speed)]
+            return [obstacle(7,(265,255),[(1,0),(-1,0)],[270,270],o_speed),
+                    obstacle(7,(535,285),[(-1,0),(1,0)],[270,270],o_speed),
+                    obstacle(7,(265,315),[(1,0),(-1,0)],[270,270],o_speed),
+                    obstacle(7,(535,345),[(-1,0),(1,0)],[270,270],o_speed)]
         elif level==2:
-            return [obstacle(7,(235,375),[(235,225)],o_speed),
-                    obstacle(7,(265,225),[(265,375)],o_speed),
-                    obstacle(7,(295,375),[(295,225)],o_speed),
-                    obstacle(7,(325,225),[(325,375)],o_speed),
-                    obstacle(7,(355,375),[(355,225)],o_speed),
-                    obstacle(7,(385,225),[(385,375)],o_speed),
-                    obstacle(7,(415,375),[(415,225)],o_speed),
-                    obstacle(7,(445,225),[(445,375)],o_speed),
-                    obstacle(7,(475,375),[(475,225)],o_speed),
-                    obstacle(7,(505,225),[(505,375)],o_speed),
-                    obstacle(7,(535,375),[(535,225)],o_speed),
-                    obstacle(7,(565,225),[(565,375)],o_speed),]
+            return [obstacle(7,(235,375),[(0,-1),(0,1)],[150,150],o_speed),
+                    obstacle(7,(265,225),[(0,1),(0,-1)],[150,150],o_speed),
+                    obstacle(7,(295,375),[(0,-1),(0,1)],[150,150],o_speed),
+                    obstacle(7,(325,225),[(0,1),(0,-1)],[150,150],o_speed),
+                    obstacle(7,(355,375),[(0,-1),(0,1)],[150,150],o_speed),
+                    obstacle(7,(385,225),[(0,1),(0,-1)],[150,150],o_speed),
+                    obstacle(7,(415,375),[(0,-1),(0,1)],[150,150],o_speed),
+                    obstacle(7,(445,225),[(0,1),(0,-1)],[150,150],o_speed),
+                    obstacle(7,(475,375),[(0,-1),(0,1)],[150,150],o_speed),
+                    obstacle(7,(505,225),[(0,1),(0,-1)],[150,150],o_speed),
+                    obstacle(7,(535,375),[(0,-1),(0,1)],[150,150],o_speed),
+                    obstacle(7,(565,225),[(0,1),(0,-1)],[150,150],o_speed),]
         elif level==3:
-            return [obstacle(7,(355,255),[(445,255),(445,345),(355,345)],o_speed),
-                    obstacle(7,(385,255),[(445,255),(445,345),(355,345),(355,255)],o_speed),
-                    obstacle(7,(415,255),[(445,255),(445,345),(355,345),(355,255)],o_speed),
-                    obstacle(7,(445,255),[(445,345),(355,345),(355,255)],o_speed),
-                    obstacle(7,(445,285),[(445,345),(355,345),(355,255),(445,255)],o_speed),
-                    obstacle(7,(445,345),[(355,345),(355,255),(445,255)],o_speed),
-                    obstacle(7,(415,345),[(355,345),(355,255),(445,255),(445,345)],o_speed),
-                    obstacle(7,(385,345),[(355,345),(355,255),(445,255),(445,345)],o_speed),
-                    obstacle(7,(355,345),[(355,255),(445,255),(445,345)],o_speed),
-                    obstacle(7,(355,315),[(355,255),(445,255),(445,345),(355,345)],o_speed),
-                    obstacle(7,(355,285),[(355,255),(445,255),(445,345),(355,345)],o_speed)]
+            return [obstacle(7,(355,255),[(1,0),(0,1),(-1,0),(0,-1)],[90,90,90,90],o_speed),
+                    obstacle(7,(385,255),[(1,0),(0,1),(-1,0),(0,-1),(1,0)],[60,90,90,90,30],o_speed),
+                    obstacle(7,(415,255),[(1,0),(0,1),(-1,0),(0,-1),(1,0)],[30,90,90,90,60],o_speed),
+                    obstacle(7,(445,255),[(0,1),(-1,0),(0,-1),(1,0)],[90,90,90,90],o_speed),
+                    obstacle(7,(445,285),[(0,1),(-1,0),(0,-1),(1,0),(0,1)],[60,90,90,90,30],o_speed),
+                    obstacle(7,(445,345),[(-1,0),(0,-1),(1,0),(0,1)],[90,90,90,90],o_speed),
+                    obstacle(7,(415,345),[(-1,0),(0,-1),(1,0),(0,1),(-1,0)],[60,90,90,90,30],o_speed),
+                    obstacle(7,(385,345),[(-1,0),(0,-1),(1,0),(0,1),(-1,0)],[30,90,90,90,60],o_speed),
+                    obstacle(7,(355,345),[(0,-1),(1,0),(0,1),(-1,0)],[90,90,90,90],o_speed),
+                    obstacle(7,(355,315),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[60,90,90,90,30],o_speed),
+                    obstacle(7,(355,285),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[30,90,90,90,60],o_speed)]
         return []
     
     def generateCoins(self, level):
@@ -201,21 +201,31 @@ class area():
         self.__init__(self.level, self.fps)
                     
 class obstacle():
-    def __init__(self, rad, startpoint, endpoints, speed):
+    def __init__(self, rad, startpoint, directions, distances, speed):
         self.pos=startpoint
         self.rad=rad
         self.startpoint=startpoint
-        self.endpoints=endpoints
-        self.speed=speed#the distance between startpoint end endpoint must be a multiple of the speed
+        self.directions=directions
+        self.distances=distances
+        self.travelled=0
+        self.speed=speed
     
     def update(self):
-        self.pos=(int((self.endpoints[0][0]-self.startpoint[0])/(abs(self.endpoints[0][0]-self.startpoint[0])+abs(self.endpoints[0][1]-self.startpoint[1]))*self.speed+self.pos[0]),
-                  int((self.endpoints[0][1]-self.startpoint[1])/(abs(self.endpoints[0][0]-self.startpoint[0])+abs(self.endpoints[0][1]-self.startpoint[1]))*self.speed+self.pos[1]))
-        if self.pos==self.endpoints[0]:
-            tmp=self.startpoint
-            self.startpoint=self.endpoints[0]
-            self.endpoints.pop(0)
-            self.endpoints.append(tmp)
+        if self.travelled+self.speed<self.distances[0]:
+            self.pos=(self.pos[0]+self.speed*self.directions[0][0],
+                      self.pos[1]+self.speed*self.directions[0][1])
+            self.travelled+=self.speed
+        else:
+            self.pos=(self.pos[0]+(self.distances[0]-self.travelled)*self.directions[0][0],
+                      self.pos[1]+(self.distances[0]-self.travelled)*self.directions[0][1])
+            rest=self.speed-(self.distances[0]-self.travelled)
+            self.directions.append(self.directions[0])
+            self.distances.append(self.distances[0])
+            self.directions.pop(0)
+            self.distances.pop(0)
+            self.pos=(self.pos[0]+rest*self.directions[0][0],
+                      self.pos[1]+rest*self.directions[0][1])
+            self.travelled=rest
         
 class player():
     def __init__(self, area):
