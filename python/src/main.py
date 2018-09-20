@@ -26,7 +26,6 @@ def play():
         if keys[RIGHT]:
             player.pos=(player.pos[0]+p_speed,player.pos[1])
             player.update()
-        
         area.update()
         if player.check_obstacle():
             deaths+=1
@@ -55,9 +54,9 @@ def play():
             pygame.draw.circle(screen,BLACK,(int(o.pos[0]),int(o.pos[1])),o.rad,1)
             
         font = pygame.font.SysFont("vinerhanditc", 24)
-        text = font.render("Death Counter: %s" %deaths, True, RED) 
+        text = font.render("Death Counter: %s" %deaths, True, RED)
         screen.blit(text,(780 - text.get_width(), 20))
-        text2 = font.render("Level: %s" %levelCurrent, True, RED) 
+        text2 = font.render("Level: %s" %levelCurrent, True, RED)
         screen.blit(text2,(20, 20))
         
         pygame.display.update()
@@ -71,7 +70,7 @@ def pause():
     s.fill(WHITE)
     screen.blit(s, (0,0))
     font = pygame.font.SysFont("vinerhanditc", 144)
-    text = font.render("PAUSED", True, RED) 
+    text = font.render("PAUSED", True, RED)
     screen.blit(text,(400 - text.get_width() // 2, 300 - text.get_height() // 2))
     while pause:
         for event in pygame.event.get():
@@ -233,10 +232,10 @@ settingsChoiceCurrent=0
 textListMenu=[]
 textListSettings=[]
 font = pygame.font.SysFont("vinerhanditc", 48)
-for i in range(len(menuChoices)):
-    textListMenu.append((font.render(menuChoices[i], True, RED),(75, 50+i*100)))
-for i in range(len(settingsChoices)):
-    textListSettings.append((font.render(settingsChoices[i], True, RED),(75, 50+i*100)))
+for i,t in enumerate(menuChoices):
+    textListMenu.append((font.render(t, True, RED),(75, 50+i*100)))
+for i,t in enumerate(settingsChoices):
+    textListSettings.append((font.render(t, True, RED),(75, 50+i*100)))
 
 clock.tick(fps)
 intro()
