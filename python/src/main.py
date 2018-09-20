@@ -91,7 +91,15 @@ def giveUp():
 def intro():
     intro=True
     global menuChoiceCurrent
-    while intro==True:
+    while intro:
+        screen.fill((50,50,100))
+        textList=[]
+        font = pygame.font.SysFont("vinerhanditc", 48)
+        for i in range(len(menuChoices)):
+            textList.append((font.render(menuChoices[i], True, RED),(75, 50+i*100)))
+        textList.append((font.render("-", True, RED),(50, 50+menuChoiceCurrent*100)))
+        for t in textList:
+            screen.blit(t[0],(t[1][0],t[1][1]))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 giveUp()
@@ -106,42 +114,64 @@ def intro():
                     elif(menuChoices[menuChoiceCurrent]=="play"):
                         intro=False
                     elif(menuChoices[menuChoiceCurrent]=="settings"):
-                        font = pygame.font.SysFont("vinerhanditc", 48)
-                        fadeList=[]
-                        for i in range(len(menuChoices)):
-                            fadeList.append((font.render(menuChoices[i],True,RED),(75, 50+i*100)))
-                        fadeLeft(fadeList)
+                        textList2=[]
+                        for i in range(len(settingsChoices)):
+                            textList2.append((font.render(settingsChoices[i], True, RED),(75, 50+i*100)))
+                        textList2.append((font.render("-", True, RED),(50, 50+settingsChoiceCurrent*100)))
+                        fadeLeft(textList,textList2)
                         settings()
         
-        screen.fill((50,50,100))
-        font = pygame.font.SysFont("vinerhanditc", 48)
-        for i in range(len(menuChoices)):
-            text = font.render(menuChoices[i], True, RED) 
-            screen.blit(text,(75, 50+i*100))
-        text = font.render("-", True, RED)
-        screen.blit(text,(50, 50+menuChoiceCurrent*100))
+
         
         pygame.display.update()
         clock.tick(fps)
     
 def settings():
     settings=True
+    global settingsChoiceCurrent
     while settings:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    settings=False
         screen.fill((50,50,100))
+        textList=[]
+        font = pygame.font.SysFont("vinerhanditc", 48)
+        for i in range(len(settingsChoices)):
+            textList.append((font.render(settingsChoices[i], True, RED),(75, 50+i*100)))
+        textList.append((font.render("-", True, RED),(50, 50+settingsChoiceCurrent*100)))
+        for t in textList:
+            screen.blit(t[0],(t[1][0],t[1][1]))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                giveUp()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    settingsChoiceCurrent=(settingsChoiceCurrent-1)%len(settingsChoices)
+                elif event.key == pygame.K_DOWN:
+                    settingsChoiceCurrent=(settingsChoiceCurrent+1)%len(settingsChoices)
+                elif event.key == pygame.K_ESCAPE:
+                    settings=False
+                elif event.key == pygame.K_RETURN:
+                    changeSetting(settingsChoices[settingsChoiceCurrent])
         pygame.display.update()
         clock.tick(fps)
         
-def fadeLeft(textList):
+def changeSetting(setting):
+    changing=True
+    while changing:
+        screen.fill((50,50,100))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                giveUp()
+        pygame.display.update()
+        clock.tick(fps)
+        
+def fadeLeft(textOutList,textInList):
     global f_speed
-    max_length = max([t[0].get_width()+t[1][0] for t in textList])
+    max_length = max([t[0].get_width()+t[1][0] for t in textOutList]+[800-t[1][0] for t in textInList])
     for i in range(round(max_length/f_speed)+1):
         screen.fill((50,50,100))
-        for t in textList:
+        for t in textOutList:
             screen.blit(t[0],(t[1][0]-i*f_speed,t[1][1]))
+        for t in textInList:
+            screen.blit(t[0],(t[1][0]+(round(max_length/f_speed)-i)*f_speed,t[1][1]))
         pygame.display.update()
     
 
@@ -166,18 +196,18 @@ PAUSE=pygame.K_p
 MBOK=1
 HIGHFPS=60
 NORMALFPS=30
-EASY=60
 HARD=180
 fps=NORMALFPS
 p_speed=60/fps
-o_speed=HARD/fps
 f_speed=90/fps
 deaths=0
-levels=[1,2]
+levels=[1,2,3]
 levelCounter=-1
 levelCurrent=levels[levelCounter]
 menuChoices=["play","settings","level editor", "quit"]
 menuChoiceCurrent=0
+settingsChoices=["fps","keys"]
+settingsChoiceCurrent=0
 
 intro()
 
@@ -187,7 +217,7 @@ pygame.mixer.music.play(-1)
 for i in levels:
     levelCounter+=1
     levelCurrent=levels[levelCounter]
-    area=gamelogic.area(i, o_speed)
+    area=gamelogic.area(i,fps)
     player=gamelogic.player((area))
     play()
     

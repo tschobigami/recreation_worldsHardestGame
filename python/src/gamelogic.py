@@ -1,16 +1,15 @@
 from shapely import geometry
 
 class area():
-    def __init__(self, level, o_speed):
+    def __init__(self, level, fps):
         self.level=level
-        self.o_speed=o_speed
-        self.obstacles=self.generateObstacles(o_speed, self.level)
-        self.coins=self.generateCoins(self.level)
+        self.fps=fps
         if level==1:
             self.frame=[(130,210),(130,390),(670,390),(670,210)]
             self.gridfactor=30
             self.sizeX=18
             self.sizeY=6
+            self.o_speed=180/fps
             
             self.playingField=[(130,210),
                                (220,210),
@@ -63,6 +62,7 @@ class area():
             self.gridfactor=30
             self.sizeX=18
             self.sizeY=6
+            self.o_speed=180/fps
             
             self.playingField=[(130,270),
                                (130,330),
@@ -106,31 +106,91 @@ class area():
                             self.lightList.append(rect)
                         else:
                             self.darkList.append(rect)
+                            
+        elif level==3:
+            self.frame=[(340,210),(460,210),(460,360),(340,360)]
+            self.gridfactor=30
+            self.sizeX=4
+            self.sizeY=5
+            self.o_speed=60/fps
+            
+            self.playingField=[(340,210),
+                               (370,210),
+                               (370,240),
+                               (460,240),
+                               (460,360),
+                               (340,360)]
+            
+            self.startArea=[(370,270),
+                            (430,270),
+                            (430,330),
+                            (370,330)]
+            
+            self.finishArea=[(370,270),
+                             (430,270),
+                             (430,330),
+                             (370,330)]
+            
+            self.startingPos=(400,300)
+            
+            self.area_obj=geometry.polygon.Polygon(self.playingField)
+            
+            self.lightList=[]
+            self.darkList=[]
+            
+            for i in range(self.sizeX):
+                for j in range(self.sizeY):
+                    rect=[(self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
+                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
+                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor),
+                          (self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor)]
+                    rect_obj=geometry.polygon.Polygon(rect)
+                    if self.area_obj.contains(rect_obj):
+                        if (i+j) % 2 == 0:
+                            self.lightList.append(rect)
+                        else:
+                            self.darkList.append(rect)
+        self.obstacles=self.generateObstacles(self.o_speed, self.level)
+        self.coins=self.generateCoins(self.level)
     
     def generateObstacles(self, o_speed, level):
         if level==1:
-            return [obstacle(7,(265,255),(535,255),o_speed),
-                    obstacle(7,(535,285),(265,285),o_speed),
-                    obstacle(7,(265,315),(535,315),o_speed),
-                    obstacle(7,(535,345),(265,345),o_speed)]
+            return [obstacle(7,(265,255),[(535,255)],o_speed),
+                    obstacle(7,(535,285),[(265,285)],o_speed),
+                    obstacle(7,(265,315),[(535,315)],o_speed),
+                    obstacle(7,(535,345),[(265,345)],o_speed)]
         elif level==2:
-            return [obstacle(7,(235,375),(235,225),o_speed),
-                    obstacle(7,(265,225),(265,375),o_speed),
-                    obstacle(7,(295,375),(295,225),o_speed),
-                    obstacle(7,(325,225),(325,375),o_speed),
-                    obstacle(7,(355,375),(355,225),o_speed),
-                    obstacle(7,(385,225),(385,375),o_speed),
-                    obstacle(7,(415,375),(415,225),o_speed),
-                    obstacle(7,(445,225),(445,375),o_speed),
-                    obstacle(7,(475,375),(475,225),o_speed),
-                    obstacle(7,(505,225),(505,375),o_speed),
-                    obstacle(7,(535,375),(535,225),o_speed),
-                    obstacle(7,(565,225),(565,375),o_speed),]
+            return [obstacle(7,(235,375),[(235,225)],o_speed),
+                    obstacle(7,(265,225),[(265,375)],o_speed),
+                    obstacle(7,(295,375),[(295,225)],o_speed),
+                    obstacle(7,(325,225),[(325,375)],o_speed),
+                    obstacle(7,(355,375),[(355,225)],o_speed),
+                    obstacle(7,(385,225),[(385,375)],o_speed),
+                    obstacle(7,(415,375),[(415,225)],o_speed),
+                    obstacle(7,(445,225),[(445,375)],o_speed),
+                    obstacle(7,(475,375),[(475,225)],o_speed),
+                    obstacle(7,(505,225),[(505,375)],o_speed),
+                    obstacle(7,(535,375),[(535,225)],o_speed),
+                    obstacle(7,(565,225),[(565,375)],o_speed),]
+        elif level==3:
+            return [obstacle(7,(355,255),[(445,255),(445,345),(355,345)],o_speed),
+                    obstacle(7,(385,255),[(445,255),(445,345),(355,345),(355,255)],o_speed),
+                    obstacle(7,(415,255),[(445,255),(445,345),(355,345),(355,255)],o_speed),
+                    obstacle(7,(445,255),[(445,345),(355,345),(355,255)],o_speed),
+                    obstacle(7,(445,285),[(445,345),(355,345),(355,255),(445,255)],o_speed),
+                    obstacle(7,(445,345),[(355,345),(355,255),(445,255)],o_speed),
+                    obstacle(7,(415,345),[(355,345),(355,255),(445,255),(445,345)],o_speed),
+                    obstacle(7,(385,345),[(355,345),(355,255),(445,255),(445,345)],o_speed),
+                    obstacle(7,(355,345),[(355,255),(445,255),(445,345)],o_speed),
+                    obstacle(7,(355,315),[(355,255),(445,255),(445,345),(355,345)],o_speed),
+                    obstacle(7,(355,285),[(355,255),(445,255),(445,345),(355,345)],o_speed)]
         return []
     
     def generateCoins(self, level):
         if level==2:
             return [coin((400,300),5)]
+        if level==3:
+            return [coin((355,225),5)]
         return []
         
     def update(self):
@@ -138,21 +198,24 @@ class area():
             o.update()
             
     def reset(self):
-        self.__init__(self.level, self.o_speed)
+        self.__init__(self.level, self.fps)
                     
 class obstacle():
-    def __init__(self, rad, startpoint, endpoint, speed):
+    def __init__(self, rad, startpoint, endpoints, speed):
         self.pos=startpoint
         self.rad=rad
         self.startpoint=startpoint
-        self.endpoint=endpoint
+        self.endpoints=endpoints
         self.speed=speed#the distance between startpoint end endpoint must be a multiple of the speed
     
     def update(self):
-        self.pos=(int((self.endpoint[0]-self.startpoint[0])/(abs(self.endpoint[0]-self.startpoint[0])+abs(self.endpoint[1]-self.startpoint[1]))*self.speed+self.pos[0]),
-                  int((self.endpoint[1]-self.startpoint[1])/(abs(self.endpoint[0]-self.startpoint[0])+abs(self.endpoint[1]-self.startpoint[1]))*self.speed+self.pos[1]))
-        if self.pos==self.endpoint:
-            self.startpoint, self.endpoint=self.endpoint,self.startpoint
+        self.pos=(int((self.endpoints[0][0]-self.startpoint[0])/(abs(self.endpoints[0][0]-self.startpoint[0])+abs(self.endpoints[0][1]-self.startpoint[1]))*self.speed+self.pos[0]),
+                  int((self.endpoints[0][1]-self.startpoint[1])/(abs(self.endpoints[0][0]-self.startpoint[0])+abs(self.endpoints[0][1]-self.startpoint[1]))*self.speed+self.pos[1]))
+        if self.pos==self.endpoints[0]:
+            tmp=self.startpoint
+            self.startpoint=self.endpoints[0]
+            self.endpoints.pop(0)
+            self.endpoints.append(tmp)
         
 class player():
     def __init__(self, area):
