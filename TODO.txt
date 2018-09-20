@@ -1,0 +1,49 @@
+WHG1:
+improve menu UI
+	music, info, help
+	status: in work
+
+WHG2:
+add settings UI
+	possibility to set keys, invert keybindings, set fps, possibly set speed
+	status: in work
+
+WHG3:
+read level data from text files
+	possibly create level objects. This is the first step to an own level editor
+	blocks WHG4, WHG5
+	status: in work
+	
+WHG4:
+add new levels
+	lvl4-lvl30
+	blocked by WHG3
+	status: blocked
+	
+	WHG4.1:
+		add level4
+		blocked by WHG6
+		
+	WHG4.1:
+		add level5
+		blocked by WHG7
+	
+WHG5:
+create level editor
+	blocked by WHG3
+	status: blocked
+
+WHG6:
+add circling obstacles
+	blocks WHG4.1
+	status: registered
+	
+WHG7:
+add checkpoints
+	blocks WHG4.2
+	status: registered
+	
+WHG8:
+improve issuetracker (this file)
+	possibly convert to html file to simplify dependencies and status
+	status: registered
