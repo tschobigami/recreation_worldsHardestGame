@@ -26,43 +26,26 @@ class area():
                                (280,360),
                                (280,390),
                                (130,390)]
-            
+
             self.startArea=[(130,210),
                             (220,210),
                             (220,390),
                             (130,390)]
-            
+
             self.finishArea=[(580,210),
                              (670,210),
                              (670,390),
                              (580,390)]
-            
+
             self.startingPos=(175,300)
-            
-            self.area_obj=geometry.polygon.Polygon(self.playingField)
-            
-            self.lightList=[]
-            self.darkList=[]
-            
-            for i in range(self.sizeX):
-                for j in range(self.sizeY):
-                    rect=[(self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
-                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
-                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor),
-                          (self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor)]
-                    rect_obj=geometry.polygon.Polygon(rect)
-                    if self.area_obj.contains(rect_obj):
-                        if (i+j) % 2 == 0:
-                            self.lightList.append(rect)
-                        else:
-                            self.darkList.append(rect)
+
         elif level==2:
             self.frame=[(130,210),(130,390),(670,390),(670,210)]
             self.gridfactor=30
             self.sizeX=18
             self.sizeY=6
             self.o_speed=180/fps
-            
+
             self.playingField=[(130,270),
                                (130,330),
                                (220,330),
@@ -75,90 +58,74 @@ class area():
                                (580,210),
                                (220,210),
                                (220,270)]
-            
+
             self.startArea=[(130,270),
                             (130,330),
                             (220,330),
                             (220,270)]
-            
+
             self.finishArea=[(670,270),
                              (670,330),
                              (580,330),
                              (580,270)]
-            
+
             self.startingPos=(175,300)
-            
-            self.area_obj=geometry.polygon.Polygon(self.playingField)
-            
-            self.lightList=[]
-            self.darkList=[]
-            
-            for i in range(self.sizeX):
-                for j in range(self.sizeY):
-                    rect=[(self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
-                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
-                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor),
-                          (self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor)]
-                    rect_obj=geometry.polygon.Polygon(rect)
-                    if self.area_obj.contains(rect_obj):
-                        if (i+j) % 2 == 0:
-                            self.lightList.append(rect)
-                        else:
-                            self.darkList.append(rect)
-                            
+
         elif level==3:
             self.frame=[(340,210),(460,210),(460,360),(340,360)]
             self.gridfactor=30
             self.sizeX=4
             self.sizeY=5
             self.o_speed=60/fps
-            
+
             self.playingField=[(340,210),
                                (370,210),
                                (370,240),
                                (460,240),
                                (460,360),
                                (340,360)]
-            
+
             self.startArea=[(370,270),
                             (430,270),
                             (430,330),
                             (370,330)]
-            
+
             self.finishArea=[(370,270),
                              (430,270),
                              (430,330),
                              (370,330)]
-            
+
             self.startingPos=(400,300)
-            
-            self.area_obj=geometry.polygon.Polygon(self.playingField)
-            
-            self.lightList=[]
-            self.darkList=[]
-            
-            for i in range(self.sizeX):
-                for j in range(self.sizeY):
-                    rect=[(self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
-                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
-                          (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor),
-                          (self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor)]
-                    rect_obj=geometry.polygon.Polygon(rect)
-                    if self.area_obj.contains(rect_obj):
-                        if (i+j) % 2 == 0:
-                            self.lightList.append(rect)
-                        else:
-                            self.darkList.append(rect)
+        self.generatePattern()
         self.obstacles=generateObstacles(self.o_speed, self.level)
         self.coins=generateCoins(self.level)
-        
+
     def update(self):
         for o in self.obstacles:
             o.update()
-            
+
     def reset(self):
         self.__init__(self.level, self.fps)
-                    
+
+    def generatePattern(self):
+        self.area_obj=geometry.polygon.Polygon(self.playingField)
+
+        self.lightList=[]
+        self.darkList=[]
+
+        for i in range(self.sizeX):
+            for j in range(self.sizeY):
+                rect=[(self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
+                      (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+j*self.gridfactor),
+                      (self.frame[0][0]+(i+1)*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor),
+                      (self.frame[0][0]+i*self.gridfactor,self.frame[0][1]+(j+1)*self.gridfactor)]
+                rect_obj=geometry.polygon.Polygon(rect)
+                if self.area_obj.contains(rect_obj):
+                    if (i+j) % 2 == 0:
+                        self.lightList.append(rect)
+                    else:
+                        self.darkList.append(rect)
+
 class obstacle():
     def __init__(self, rad, startpoint, directions, distances, speed):
         self.pos=startpoint
@@ -168,7 +135,7 @@ class obstacle():
         self.distances=distances
         self.travelled=0
         self.speed=speed
-    
+
     def update(self):
         if self.travelled+self.speed<self.distances[0]:
             self.pos=(self.pos[0]+self.speed*self.directions[0][0],
@@ -185,7 +152,7 @@ class obstacle():
             self.pos=(self.pos[0]+rest*self.directions[0][0],
                       self.pos[1]+rest*self.directions[0][1])
             self.travelled=rest
-        
+
 class player():
     def __init__(self, area):
         self.pos=area.startingPos
@@ -194,7 +161,7 @@ class player():
                    (self.pos[0]+9,self.pos[1]+9),
                    (self.pos[0]-9,self.pos[1]+9),]
         self.environment=area
-        
+
     def update(self):
         new_area=[(self.pos[0]-9,self.pos[1]-9),
                   (self.pos[0]+9,self.pos[1]-9),
@@ -207,7 +174,7 @@ class player():
             #reset position
             self.pos=(sum([a[0] for a in self.area])/4,
                       sum([a[1] for a in self.area])/4)
-            
+
     def check_obstacle(self):
         for o in self.environment.obstacles:
             o_obj=geometry.point.Point(o.pos).buffer(o.rad)
@@ -215,7 +182,7 @@ class player():
             if o_obj.intersects(area_obj):
                 return True
         return False
-    
+
     def check_finished(self):
         area_obj=geometry.polygon.Polygon(self.area)
         farea_obj=geometry.polygon.Polygon(self.environment.finishArea)
@@ -228,16 +195,16 @@ class player():
             if area_obj.intersects(farea_obj):
                 return True
         return False
-    
+
     def reset(self):
         self.__init__(self.environment)
-        
+
 class coin():
     def __init__(self, pos, rad):
         self.pos=pos
         self.rad=rad
         self.found=False
-        
+
 def generateObstacles(o_speed, level):
     if level==1:
         return [obstacle(7,(265,255),[(1,0),(-1,0)],[270,270],o_speed),
@@ -270,7 +237,7 @@ def generateObstacles(o_speed, level):
                 obstacle(7,(355,315),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[60,90,90,90,30],o_speed),
                 obstacle(7,(355,285),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[30,90,90,90,60],o_speed)]
     return []
-        
+
 def generateCoins(level):
     if level==2:
         return [coin((400,300),5)]
