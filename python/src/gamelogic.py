@@ -1,4 +1,5 @@
 from shapely import geometry
+from math import sqrt, sin, cos
 
 class area():
     def __init__(self, level, fps):
@@ -127,6 +128,13 @@ class area():
                         self.darkList.append(rect)
 
 class obstacle():
+    def __init__(self):
+        self.pos=(0,0)
+        self.rad=0
+    def update(self):
+        return
+
+class lin_obstacle(obstacle):
     def __init__(self, rad, startpoint, directions, distances, speed):
         self.pos=startpoint
         self.rad=rad
@@ -152,6 +160,23 @@ class obstacle():
             self.pos=(self.pos[0]+rest*self.directions[0][0],
                       self.pos[1]+rest*self.directions[0][1])
             self.travelled=rest
+            
+class rad_obstacle(obstacle):
+    def __init__(self, rad, startpoint, center, cw, speed):#speed in radians per frame
+        self.pos=startpoint
+        self.radius=sqrt((startpoint[0]-center[0])**2+(startpoint[1]-center[1])**2)
+        self.rad=rad
+        self.startpoint=startpoint
+        self.center=center
+        self.cw=cw
+        self.travelled=0
+        self.speed=speed
+    def update(self):
+        self.travelled+=self.speed
+        if self.cw:
+            self.pos=(self.center[0]+self.radius*cos(self.travelled),self.center[1]+self.radius*sin(self.travelled))
+        else:
+            self.pos=(self.center[0]+self.radius*cos(self.travelled),self.center[1]-self.radius*sin(self.travelled))
 
 class player():
     def __init__(self, area):
@@ -207,35 +232,35 @@ class coin():
 
 def generateObstacles(o_speed, level):
     if level==1:
-        return [obstacle(7,(265,255),[(1,0),(-1,0)],[270,270],o_speed),
-                obstacle(7,(535,285),[(-1,0),(1,0)],[270,270],o_speed),
-                obstacle(7,(265,315),[(1,0),(-1,0)],[270,270],o_speed),
-                obstacle(7,(535,345),[(-1,0),(1,0)],[270,270],o_speed)]
+        return [lin_obstacle(7,(265,255),[(1,0),(-1,0)],[270,270],o_speed),
+                lin_obstacle(7,(535,285),[(-1,0),(1,0)],[270,270],o_speed),
+                lin_obstacle(7,(265,315),[(1,0),(-1,0)],[270,270],o_speed),
+                lin_obstacle(7,(535,345),[(-1,0),(1,0)],[270,270],o_speed)]
     elif level==2:
-        return [obstacle(7,(235,375),[(0,-1),(0,1)],[150,150],o_speed),
-                obstacle(7,(265,225),[(0,1),(0,-1)],[150,150],o_speed),
-                obstacle(7,(295,375),[(0,-1),(0,1)],[150,150],o_speed),
-                obstacle(7,(325,225),[(0,1),(0,-1)],[150,150],o_speed),
-                obstacle(7,(355,375),[(0,-1),(0,1)],[150,150],o_speed),
-                obstacle(7,(385,225),[(0,1),(0,-1)],[150,150],o_speed),
-                obstacle(7,(415,375),[(0,-1),(0,1)],[150,150],o_speed),
-                obstacle(7,(445,225),[(0,1),(0,-1)],[150,150],o_speed),
-                obstacle(7,(475,375),[(0,-1),(0,1)],[150,150],o_speed),
-                obstacle(7,(505,225),[(0,1),(0,-1)],[150,150],o_speed),
-                obstacle(7,(535,375),[(0,-1),(0,1)],[150,150],o_speed),
-                obstacle(7,(565,225),[(0,1),(0,-1)],[150,150],o_speed),]
+        return [lin_obstacle(7,(235,375),[(0,-1),(0,1)],[150,150],o_speed),
+                lin_obstacle(7,(265,225),[(0,1),(0,-1)],[150,150],o_speed),
+                lin_obstacle(7,(295,375),[(0,-1),(0,1)],[150,150],o_speed),
+                lin_obstacle(7,(325,225),[(0,1),(0,-1)],[150,150],o_speed),
+                lin_obstacle(7,(355,375),[(0,-1),(0,1)],[150,150],o_speed),
+                lin_obstacle(7,(385,225),[(0,1),(0,-1)],[150,150],o_speed),
+                lin_obstacle(7,(415,375),[(0,-1),(0,1)],[150,150],o_speed),
+                lin_obstacle(7,(445,225),[(0,1),(0,-1)],[150,150],o_speed),
+                lin_obstacle(7,(475,375),[(0,-1),(0,1)],[150,150],o_speed),
+                lin_obstacle(7,(505,225),[(0,1),(0,-1)],[150,150],o_speed),
+                lin_obstacle(7,(535,375),[(0,-1),(0,1)],[150,150],o_speed),
+                lin_obstacle(7,(565,225),[(0,1),(0,-1)],[150,150],o_speed),]
     elif level==3:
-        return [obstacle(7,(355,255),[(1,0),(0,1),(-1,0),(0,-1)],[90,90,90,90],o_speed),
-                obstacle(7,(385,255),[(1,0),(0,1),(-1,0),(0,-1),(1,0)],[60,90,90,90,30],o_speed),
-                obstacle(7,(415,255),[(1,0),(0,1),(-1,0),(0,-1),(1,0)],[30,90,90,90,60],o_speed),
-                obstacle(7,(445,255),[(0,1),(-1,0),(0,-1),(1,0)],[90,90,90,90],o_speed),
-                obstacle(7,(445,285),[(0,1),(-1,0),(0,-1),(1,0),(0,1)],[60,90,90,90,30],o_speed),
-                obstacle(7,(445,345),[(-1,0),(0,-1),(1,0),(0,1)],[90,90,90,90],o_speed),
-                obstacle(7,(415,345),[(-1,0),(0,-1),(1,0),(0,1),(-1,0)],[60,90,90,90,30],o_speed),
-                obstacle(7,(385,345),[(-1,0),(0,-1),(1,0),(0,1),(-1,0)],[30,90,90,90,60],o_speed),
-                obstacle(7,(355,345),[(0,-1),(1,0),(0,1),(-1,0)],[90,90,90,90],o_speed),
-                obstacle(7,(355,315),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[60,90,90,90,30],o_speed),
-                obstacle(7,(355,285),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[30,90,90,90,60],o_speed)]
+        return [lin_obstacle(7,(355,255),[(1,0),(0,1),(-1,0),(0,-1)],[90,90,90,90],o_speed),
+                lin_obstacle(7,(385,255),[(1,0),(0,1),(-1,0),(0,-1),(1,0)],[60,90,90,90,30],o_speed),
+                lin_obstacle(7,(415,255),[(1,0),(0,1),(-1,0),(0,-1),(1,0)],[30,90,90,90,60],o_speed),
+                lin_obstacle(7,(445,255),[(0,1),(-1,0),(0,-1),(1,0)],[90,90,90,90],o_speed),
+                lin_obstacle(7,(445,285),[(0,1),(-1,0),(0,-1),(1,0),(0,1)],[60,90,90,90,30],o_speed),
+                lin_obstacle(7,(445,345),[(-1,0),(0,-1),(1,0),(0,1)],[90,90,90,90],o_speed),
+                lin_obstacle(7,(415,345),[(-1,0),(0,-1),(1,0),(0,1),(-1,0)],[60,90,90,90,30],o_speed),
+                lin_obstacle(7,(385,345),[(-1,0),(0,-1),(1,0),(0,1),(-1,0)],[30,90,90,90,60],o_speed),
+                lin_obstacle(7,(355,345),[(0,-1),(1,0),(0,1),(-1,0)],[90,90,90,90],o_speed),
+                lin_obstacle(7,(355,315),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[60,90,90,90,30],o_speed),
+                lin_obstacle(7,(355,285),[(0,-1),(1,0),(0,1),(-1,0),(0,-1)],[30,90,90,90,60],o_speed)]
     return []
 
 def generateCoins(level):
