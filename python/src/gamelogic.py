@@ -127,14 +127,7 @@ class area():
                     else:
                         self.darkList.append(rect)
 
-class obstacle():
-    def __init__(self):
-        self.pos=(0,0)
-        self.rad=0
-    def update(self):
-        return
-
-class lin_obstacle(obstacle):
+class lin_obstacle():
     def __init__(self, rad, startpoint, directions, distances, speed):
         self.pos=startpoint
         self.rad=rad
@@ -160,8 +153,8 @@ class lin_obstacle(obstacle):
             self.pos=(self.pos[0]+rest*self.directions[0][0],
                       self.pos[1]+rest*self.directions[0][1])
             self.travelled=rest
-            
-class rad_obstacle(obstacle):
+
+class rad_obstacle():
     def __init__(self, rad, startpoint, center, cw, speed):#speed in radians per frame
         self.pos=startpoint
         self.radius=sqrt((startpoint[0]-center[0])**2+(startpoint[1]-center[1])**2)
