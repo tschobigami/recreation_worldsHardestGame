@@ -4,7 +4,7 @@ import ctypes
 import os
 
 def play():
-    global deaths
+    global deaths, time
     finished=False
     while not finished:
         for event in pygame.event.get():
@@ -31,10 +31,10 @@ def play():
             deaths+=1
             player.reset()
             area.reset()
-            
+
         if player.check_finished():
             finished=True
-              
+
         screen.fill(DARKBLUE)
         for lrect in area.lightList:
             pygame.draw.polygon(screen,LIGHTGREY,lrect,0)
@@ -52,16 +52,24 @@ def play():
         for o in area.obstacles:
             pygame.draw.circle(screen,BLUE,(int(o.pos[0]),int(o.pos[1])),o.rad,0)
             pygame.draw.circle(screen,BLACK,(int(o.pos[0]),int(o.pos[1])),o.rad,1)
-            
+
+        time+=1/fps
+        tis=int(time)%60
+        tim=int(time/60)
+        if tis<10:
+            tis="0"+str(tis)
+
         font = pygame.font.SysFont("vinerhanditc", 24)
         text = font.render("Death Counter: %s" %deaths, True, RED)
         screen.blit(text,(780 - text.get_width(), 20))
         text2 = font.render("Level: %s" %levelCurrent, True, RED)
         screen.blit(text2,(20, 20))
-        
+        text3 = font.render("%s:%s" %(tim,tis), True, RED)
+        screen.blit(text3,(780 - text3.get_width(),580 - text3.get_height()))
+
         pygame.display.update()
         clock.tick(fps)
-        
+
 def pause():
     pygame.mixer.music.pause()
     pause=True
@@ -82,12 +90,12 @@ def pause():
                 giveUp()
         pygame.display.update()
         clock.tick(fps)
-        
+
 def giveUp():
     if ctypes.windll.user32.MessageBoxW(0, "Do you really want to give up?", "Worlds hardest game", 33) == MBOK:
         pygame.quit()
         quit()
-        
+
 def intro():
     intro=True
     global menuChoiceCurrent
@@ -97,7 +105,7 @@ def intro():
         for t in textListMenu:
             screen.blit(t[0],(t[1][0],t[1][1]))
         textListMenu.pop()
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 giveUp()
@@ -114,10 +122,10 @@ def intro():
                     elif(menuChoices[menuChoiceCurrent]=="settings"):
                         fadeLeft(textListMenu,textListSettings)
                         settings()
-        
+
         pygame.display.update()
         clock.tick(fps)
-    
+
 def settings():
     settings=True
     global settingsChoiceCurrent
@@ -142,7 +150,7 @@ def settings():
                     changeSetting(settingsChoices[settingsChoiceCurrent])
         pygame.display.update()
         clock.tick(fps)
-        
+
 def changeSetting(setting):
     changing=True
     textListSettings.append((font.render("-", True, RED),(50, 50+settingsChoiceCurrent*100)))
@@ -163,13 +171,13 @@ def changeSetting(setting):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     changing=False
-            
+
         pygame.draw.line(screen,RED,(300,0),(300,600),2)
         pygame.display.update()
         clock.tick(fps)
-    
+
     textListSettings.pop()
-        
+
 def fadeLeft(textOutList,textInList):
     global f_speed
     max_length = max([t[0].get_width()+t[1][0] for t in textOutList]+[800-t[1][0] for t in textInList])
@@ -181,7 +189,7 @@ def fadeLeft(textOutList,textInList):
             screen.blit(t[0],(t[1][0]+(round(max_length/f_speed)-i)*f_speed,t[1][1]))
         pygame.display.update()
         clock.tick(fps)
-        
+
 def fadeRight(textOutList,textInList):
     global f_speed
     max_length = max([t[0].get_width()+t[1][0] for t in textInList]+[800-t[1][0] for t in textOutList])
@@ -193,7 +201,7 @@ def fadeRight(textOutList,textInList):
             screen.blit(t[0],(t[1][0]-(round(max_length/f_speed)-i)*f_speed,t[1][1]))
         pygame.display.update()
         clock.tick(fps)
-    
+
 
 pygame.init()
 
@@ -225,6 +233,7 @@ deaths=0
 levels=[1,2,3]
 levelCounter=-1
 levelCurrent=levels[levelCounter]
+time=0
 menuChoices=["play","settings","level editor", "quit"]
 menuChoiceCurrent=0
 settingsChoices=["fps","keys"]
@@ -249,6 +258,6 @@ for i in levels:
     area=gamelogic.area(i,fps)
     player=gamelogic.player((area))
     play()
-    
+
 pygame.quit()
 quit()
